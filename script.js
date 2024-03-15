@@ -21,6 +21,7 @@ const gameBoard = (function () {
     const rows = 3;
     const board = [];
     let turn = "X";
+    let gameOver = false;
 
     const header = document.querySelector('.boardHeader');
     const buttons = document.querySelectorAll('.boardButton');
@@ -36,6 +37,7 @@ const gameBoard = (function () {
         console.log(buttons);
         buttons.forEach(button => {
             button.addEventListener('click', tryTile);
+            button.textContent = "";
         });
 
         // console.log(board);
@@ -47,12 +49,14 @@ const gameBoard = (function () {
     }
 
     const changeTurn = () => {
+        if (gameOver) { return; }
         if (turn === "X") { turn = "O";}
         else { turn = "X"; }
         header.textContent = `${turn} Turn`;
     }
 
     const tryTile = e => {
+        if (gameOver) { return; }
         const buttonID = parseInt(e.target.id) - 1;
         const buttonRow = Math.floor((buttonID) / 3);
         const buttonColumn = buttonID - (buttonRow * 3);
@@ -62,7 +66,56 @@ const gameBoard = (function () {
         {
             tile.setTile(turn);
             e.target.textContent = turn;
+            checkWin();
             changeTurn();
+        }
+    }
+
+    const checkWin = () => {
+        let rowMarks = new Array(rows);
+        rowMarks.fill(0);
+        let columnMarks = new Array(columns);
+        columnMarks.fill(0);
+        // Check each tile for the player's mark and add it to that row and column's tally.
+        for (y = 0; y < rows; y++) {
+            for (x = 0; x < columns; x++) {
+                if (board[y][x].getTile() === turn) {
+                    rowMarks[y] += 1;
+                    columnMarks[x] += 1;
+                }
+            }
+        }
+        // See if either one has the value of its length (the height or width of the board) and award a win if so.
+        if (rowMarks.includes(rows) || columnMarks.includes(columns)) {
+            gameOver = true;
+        }
+
+        // Check diagonals by using a for loop (only works if rows = columns)
+        if (rows === columns) {
+            let counter = 0;
+            // First from top-left to bottom-right
+            for (pos = 0; pos < rows; pos++) {
+                if (board[pos][pos].getTile() === turn) {
+                    counter++;
+                }
+            }
+
+            if (counter === rows) { gameOver = true;}
+            // Then try from top-right to bottom-right
+            let y = 0;
+            counter = 0;
+            for (x = rows - 1; x >= 0; x--) {
+                if (board[y][x].getTile() === turn) {
+                    counter++;
+                }
+                y++;
+            }
+
+            if (counter === rows) { gameOver = true; }
+        }
+
+        if (gameOver) {
+            header.textContent = `${turn} wins!`;
         }
     }
     
