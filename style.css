@@ -48,3 +48,30 @@ table {
 }
 
 /* Actual CSS code starts here */
+
+body {
+	background-color: rgb(48, 48, 48);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100vw;
+	height: 100vh;
+}
+
+.gameBoard {
+	display: grid;
+	grid-template-columns: repeat(3, 3rem);
+	grid-template-rows: repeat(4, 3rem);
+}
+
+.boardHeader {
+	grid-column: 1 / -1;
+	color: white;
+	align-self: center;
+	justify-self: center;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+
