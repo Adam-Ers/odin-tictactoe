@@ -16,15 +16,46 @@ function createTile() {
     };
 }
 
+const displayController = (function () {
+    const header = document.querySelector('.boardHeader');
+    const buttons = document.querySelectorAll('.boardButton');
+
+    const initialize = () => {
+        buttons.forEach(button => {
+            button.textContent = "";
+        });
+
+        assignButtonsToFunction(gameBoard.tryTile);
+    }
+
+    const assignButtonsToFunction = func => {
+        buttons.forEach(button => {
+            button.addEventListener('click', func);
+        });
+    };
+
+    const changeHeaderText = text => {
+        header.textContent = text;
+    };
+
+    const changeButtonText = (button, text) => {
+        button.textContent = text;
+    }
+
+    return { 
+        initialize,
+        changeHeaderText,
+        changeButtonText,
+        assignButtonsToFunction,
+    };
+})();
+
 const gameBoard = (function () { 
     const columns = 3;
     const rows = 3;
     const board = [];
     let turn = "X";
     let gameOver = false;
-
-    const header = document.querySelector('.boardHeader');
-    const buttons = document.querySelectorAll('.boardButton');
 
     const start = () => {
         for (y = 0; y < rows; y++) {
@@ -34,13 +65,7 @@ const gameBoard = (function () {
             }
         }
 
-        console.log(buttons);
-        buttons.forEach(button => {
-            button.addEventListener('click', tryTile);
-            button.textContent = "";
-        });
-
-        // console.log(board);
+        displayController.initialize();
     };
 
     const print = () => {
@@ -52,7 +77,7 @@ const gameBoard = (function () {
         if (gameOver) { return; }
         if (turn === "X") { turn = "O";}
         else { turn = "X"; }
-        header.textContent = `${turn} Turn`;
+        displayController.changeHeaderText(`${turn} Turn`);
     }
 
     const tryTile = e => {
@@ -65,7 +90,7 @@ const gameBoard = (function () {
         if (tile.checkTileEmpty())
         {
             tile.setTile(turn);
-            e.target.textContent = turn;
+            displayController.changeButtonText(e.target, turn);
             checkWin();
             changeTurn();
         }
@@ -115,7 +140,7 @@ const gameBoard = (function () {
         }
 
         if (gameOver) {
-            header.textContent = `${turn} wins!`;
+            displayController.changeHeaderText(`${turn} wins!`);
         }
     }
     
