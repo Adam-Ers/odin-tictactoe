@@ -101,6 +101,39 @@ body {
 	height: 30rem;
 	display: flex;
 	flex-direction: column;
+	align-content: center;
+	padding: 2rem;
+	gap: 2rem;
+}
+
+.settingsHeader {
+	color: #d8d8da;
+	text-align: center;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.settingsContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.settingsContainer label {
+	color: #d8d8da;
+	font-weight: 500;
+}
+
+.settingsContainer input {
+	background-color: #9595a7;
+	outline: 0;
+	border: 0;
+	padding: 0.3rem 0.5rem;
+	border-radius: 1rem;
+}
+
+.settingsContainer input:focus {
+	outline: 1px solid #d8d8da;
 }
 
 .gameBoard {
@@ -130,7 +163,7 @@ body {
 }
 
 .boardButton {
-	background-color: #00000000;
+	background-color: #ffffff38;
 	border: 1px solid #27272a;
 	outline: 1px solid #27272a;
 	border-radius: 4px;

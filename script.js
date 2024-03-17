@@ -19,6 +19,10 @@ function createTile() {
 const domController = (function () {
     const header = document.querySelector('.boardHeader');
     const buttons = document.querySelectorAll('.boardButton');
+    const player1NameInput = document.querySelector('#player1Name');
+    const player2NameInput = document.querySelector('#player2Name');
+    let player1Name = "X";
+    let player2Name = "O";
 
     const initialize = () => {
         buttons.forEach(button => {
@@ -26,7 +30,10 @@ const domController = (function () {
         });
 
         assignButtonsToFunction(gameBoard.tryTile);
-    }
+
+        player1NameInput.addEventListener("blur", e => { changePlayerName(1, e.target.value); })
+        player2NameInput.addEventListener("blur", e => { changePlayerName(2, e.target.value); })
+    };
 
     const assignButtonsToFunction = func => {
         buttons.forEach(button => {
@@ -34,18 +41,31 @@ const domController = (function () {
         });
     };
 
+    const changePlayerName = (player, name) => {
+        if (name === '') { name = player != 2 ? "X" : "O"; }
+        if (player === 2) { player2Name = name; }
+        else { player1Name = name; }
+        changeHeaderPlayer(player);
+    };
+
     const changeHeaderText = text => {
         header.textContent = text;
     };
 
+    const changeHeaderPlayer = player => {
+        let playerText = player != 2 ? player1Name : player2Name;
+        changeHeaderText(`${playerText}'s Turn`);
+        if (gameBoard.isGameOver()) { changeHeaderText(`${playerText} wins!`); }
+    };
+
     const changeButtonText = (button, text) => {
         button.textContent = text;
-    }
+    };
 
     return { 
         initialize,
-        changeHeaderText,
         changeButtonText,
+        changeHeaderPlayer,
         assignButtonsToFunction,
     };
 })();
@@ -54,8 +74,10 @@ const gameBoard = (function () {
     const columns = 3;
     const rows = 3;
     const board = [];
-    let turn = "X";
+    let turn = 1;
+    let currentTurnMark = "X";
     let gameOver = false;
+    const isGameOver = () => gameOver;
 
     const start = () => {
         for (y = 0; y < rows; y++) {
@@ -75,9 +97,10 @@ const gameBoard = (function () {
 
     const changeTurn = () => {
         if (gameOver) { return; }
-        if (turn === "X") { turn = "O";}
-        else { turn = "X"; }
-        domController.changeHeaderText(`${turn}'s Turn`);
+        if (turn === 1) { turn = 2;}
+        else { turn = 1; }
+        currentTurnMark = turn != 2 ? "X" : "O";
+        domController.changeHeaderPlayer(turn);
     }
 
     const tryTile = e => {
@@ -89,10 +112,11 @@ const gameBoard = (function () {
         const tile = board[buttonRow][buttonColumn];
         if (tile.checkTileEmpty())
         {
-            tile.setTile(turn);
-            domController.changeButtonText(e.target, turn);
+            tile.setTile(currentTurnMark);
+            domController.changeButtonText(e.target, currentTurnMark);
             checkWin();
             changeTurn();
+            domController.changeHeaderPlayer(turn);
         }
     }
 
@@ -104,7 +128,7 @@ const gameBoard = (function () {
         // Check each tile for the player's mark and add it to that row and column's tally.
         for (y = 0; y < rows; y++) {
             for (x = 0; x < columns; x++) {
-                if (board[y][x].getTile() === turn) {
+                if (board[y][x].getTile() === currentTurnMark) {
                     rowMarks[y] += 1;
                     columnMarks[x] += 1;
                 }
@@ -120,7 +144,7 @@ const gameBoard = (function () {
             let counter = 0;
             // First from top-left to bottom-right
             for (pos = 0; pos < rows; pos++) {
-                if (board[pos][pos].getTile() === turn) {
+                if (board[pos][pos].getTile() === currentTurnMark) {
                     counter++;
                 }
             }
@@ -130,7 +154,7 @@ const gameBoard = (function () {
             let y = 0;
             counter = 0;
             for (x = rows - 1; x >= 0; x--) {
-                if (board[y][x].getTile() === turn) {
+                if (board[y][x].getTile() === currentTurnMark) {
                     counter++;
                 }
                 y++;
@@ -138,13 +162,10 @@ const gameBoard = (function () {
 
             if (counter === rows) { gameOver = true; }
         }
-
-        if (gameOver) {
-            domController.changeHeaderText(`${turn} wins!`);
-        }
     }
     
     return {
+        isGameOver,
         start,
         print,
         tryTile,
