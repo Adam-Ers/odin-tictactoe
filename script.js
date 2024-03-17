@@ -49,6 +49,7 @@ const domController = (function () {
         let playerText = player != 2 ? player1Name : player2Name;
         changeHeaderText(`${playerText}'s Turn`);
         if (gameBoard.isGameOver()) { changeHeaderText(`${playerText} wins!`); }
+        if (gameBoard.isTie()) { changeHeaderText('Tie!'); }
     };
 
     const changeButtonText = (button, text) => { button.textContent = text; };
@@ -85,7 +86,9 @@ const gameBoard = (function () {
     let turn = 1;
     let currentTurnMark = "X";
     let gameOver = false;
+    let tie = false;
     const isGameOver = () => gameOver;
+    const isTie = () => tie;
 
     const start = () => {
         createBoard();
@@ -96,6 +99,7 @@ const gameBoard = (function () {
         turn = 1;
         currentTurnMark = "X";
         gameOver = false;
+        tie = false;
         start();
         domController.changeHeaderPlayer(turn);
      };
@@ -181,12 +185,19 @@ const gameBoard = (function () {
 
             if (counter === rows) { gameOver = true; }
 
+            // Check if board is full by counting if it has any '_'s at all. If not, it's full.
+            const isBoardFull = board.reduce((p, cur) => cur.reduce((p, cur) => p += cur.getTile() === '_',0), 0) === 0;
+
+            // If no-one has won and our board is full, we have a tie.
+            if (!gameOver && !tie && isBoardFull) { gameOver = true; tie = true; }
+
             domController.changeHeaderPlayer(turn);
         }
     }
     
     return {
         isGameOver,
+        isTie,
         start,
         print,
         tryTile,
