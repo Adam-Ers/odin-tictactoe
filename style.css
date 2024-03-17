@@ -49,25 +49,79 @@ table {
 
 /* Actual CSS code starts here */
 
+@font-face {
+	font-family: 'Roboto';
+	src: url('./Roboto-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('./Roboto-Bold.ttf');
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('./Roboto-Medium.ttf');
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('./Roboto-MediumItalic.ttf');
+	font-weight: 500;
+	font-style: italic;
+}
+
+* {
+	box-sizing: border-box;
+}
+
 body {
-	background-color: rgb(48, 48, 48);
+	/* We are using the Zinc palette from Tailwind */
+	background-color: #3f3f46;
+	font-family: 'Roboto', sans-serif;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: start;
+	margin: 0 auto;
+	width: 62rem;
+	height: 100vh;
+	gap: 3rem;
+}
+
+.settings {
+	background-color: #52525b;
+	background: linear-gradient(135deg, rgba(82, 82, 91, 1) 0%, rgba(86, 86, 98, 1) 50%);
+	border: 2px solid #27272a;
+	border-radius: 1.5rem;
+	box-shadow: 4px 4px 4px #313136;
+	width: 20rem;
+	height: 30rem;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	width: 100vw;
-	height: 100vh;
 }
 
 .gameBoard {
+	background-color: #52525b;
+	background: linear-gradient(135deg, rgba(82, 82, 91, 1) 0%, rgba(86, 86, 98, 1) 50%);
+	border: 2px solid #27272a;
+	border-radius: 1.5rem;
+	box-shadow: 4px 4px 4px #313136;
+	width: 20rem;
+	height: 20rem;
 	display: grid;
-	grid-template-columns: repeat(3, 3rem);
-	grid-template-rows: repeat(4, 3rem);
+	grid-template-columns: repeat(3, 4rem);
+	grid-template-rows: repeat(4, 4rem);
+	gap: 4px;
+	padding-bottom: 3rem;
+	place-content: center;
 }
 
 .boardHeader {
 	grid-column: 1 / -1;
-	color: white;
+	color: #d8d8da;
 	align-self: center;
 	justify-self: center;
 	text-align: center;
@@ -75,3 +129,25 @@ body {
 	font-size: 1.5rem;
 }
 
+.boardButton {
+	background-color: #00000000;
+	border: 1px solid #27272a;
+	outline: 1px solid #27272a;
+	border-radius: 4px;
+	box-shadow: 2px 2px 2px #484850;
+}
+
+@media screen and (max-width: 1000px) {
+	body {
+		justify-content: center;
+		width: 100vw;
+	}
+}
+
+@media screen and (max-width: 700px) {
+	body {
+		flex-direction: column;
+		gap: 20px;
+		padding: 20px;
+	}
+}

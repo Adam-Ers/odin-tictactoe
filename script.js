@@ -16,7 +16,7 @@ function createTile() {
     };
 }
 
-const displayController = (function () {
+const domController = (function () {
     const header = document.querySelector('.boardHeader');
     const buttons = document.querySelectorAll('.boardButton');
 
@@ -65,7 +65,7 @@ const gameBoard = (function () {
             }
         }
 
-        displayController.initialize();
+        domController.initialize();
     };
 
     const print = () => {
@@ -77,7 +77,7 @@ const gameBoard = (function () {
         if (gameOver) { return; }
         if (turn === "X") { turn = "O";}
         else { turn = "X"; }
-        displayController.changeHeaderText(`${turn} Turn`);
+        domController.changeHeaderText(`${turn}'s Turn`);
     }
 
     const tryTile = e => {
@@ -90,7 +90,7 @@ const gameBoard = (function () {
         if (tile.checkTileEmpty())
         {
             tile.setTile(turn);
-            displayController.changeButtonText(e.target, turn);
+            domController.changeButtonText(e.target, turn);
             checkWin();
             changeTurn();
         }
@@ -140,7 +140,7 @@ const gameBoard = (function () {
         }
 
         if (gameOver) {
-            displayController.changeHeaderText(`${turn} wins!`);
+            domController.changeHeaderText(`${turn} wins!`);
         }
     }
     
