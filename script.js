@@ -182,17 +182,18 @@ const gameBoard = (function () {
                 }
                 y++;
             }
-
+            
             if (counter === rows) { gameOver = true; }
-
-            // Check if board is full by counting if it has any '_'s at all. If not, it's full.
-            const isBoardFull = board.reduce((p, cur) => cur.reduce((p, cur) => p += cur.getTile() === '_',0), 0) === 0;
-
-            // If no-one has won and our board is full, we have a tie.
-            if (!gameOver && !tie && isBoardFull) { gameOver = true; tie = true; }
-
-            domController.changeHeaderPlayer(turn);
         }
+
+
+        // Check if board is full by counting if it has any '_'s at all. If not, it's full.
+        const isBoardFull = board.reduce((p, cur) => cur.reduce((p, cur) => p += cur.getTile() === '_', 0), 0) === 0;
+
+        // If no-one has won and our board is full, we have a tie.
+        if (!gameOver && !tie && isBoardFull) { gameOver = true; tie = true; }
+
+        domController.changeHeaderPlayer(turn);
     }
     
     return {
