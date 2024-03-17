@@ -187,8 +187,8 @@ const gameBoard = (function () {
         }
 
 
-        // Check if board is full by counting if it has any '_'s at all. If not, it's full.
-        const isBoardFull = board.reduce((p, cur) => cur.reduce((p, cur) => p += cur.getTile() === '_', 0), 0) === 0;
+        // Check if board is full by counting if it has any '_'s at all. If it has none, it's full.
+        const isBoardFull = board.reduce((p, cur) => p + cur.reduce((p, cur) => p + (cur.getTile() === '_' ? 1 : 0), 0), 0) === 0;
 
         // If no-one has won and our board is full, we have a tie.
         if (!gameOver && !tie && isBoardFull) { gameOver = true; tie = true; }
