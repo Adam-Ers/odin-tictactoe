@@ -1,14 +1,3 @@
-function createTile() {
-    let tile = "_";
-    const getTile = () => tile;
-    const setTile = value => { tile = value; };
-    const isTileEmpty = () => { return tile === "_"; };
-
-    return { 
-        setTile, getTile, isTileEmpty,
-    };
-}
-
 const domController = (function () {
     const header = document.querySelector('.boardHeader');
     const buttons = document.querySelectorAll('.boardButton');
@@ -55,7 +44,7 @@ const domController = (function () {
     const changeButtonText = (button, text) => { button.textContent = text; };
 
     const changeButtonSymbol = (button, symbol) => {
-        button.innerHTML = "";
+        if (button.firstChild) { button.removeChild(button.firstChild); }
         const path = symbol === "X" ? crossPath : circlePath;
 
         const img = document.createElement('img');
@@ -65,7 +54,7 @@ const domController = (function () {
 
     const resetButtons = () => {
         buttons.forEach(button => {
-            button.innerHTML = "";
+            if (button.firstChild) { button.removeChild(button.firstChild); }
         });
     };
 
@@ -80,6 +69,18 @@ const domController = (function () {
 })();
 
 const gameBoard = (function () { 
+    // Tile Object Factory
+    function createTile() {
+        let tile = "_";
+        const getTile = () => tile;
+        const setTile = value => { tile = value; };
+        const isTileEmpty = () => { return tile === "_"; };
+
+        return {
+            setTile, getTile, isTileEmpty,
+        };
+    }
+
     const columns = 3;
     const rows = 3;
     const board = [];
@@ -130,7 +131,7 @@ const gameBoard = (function () {
 
     const tryTile = e => {
         if (gameOver) { return; }
-        const buttonID = parseInt(e.target.id) - 1;
+        const buttonID = parseInt(e.currentTarget.id) - 1;
         const buttonRow = Math.floor((buttonID) / 3);
         const buttonColumn = buttonID - (buttonRow * 3);
 
