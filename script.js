@@ -40,7 +40,7 @@ const domController = (function () {
         if (name === '') { name = player != 2 ? "X" : "O"; }
         if (player === 2) { player2Name = name; }
         else { player1Name = name; }
-        changeHeaderPlayer(player);
+        if (player === gameBoard.getTurn()) { changeHeaderPlayer(player); }
     };
 
     const changeHeaderText = text => { header.textContent = text; };
@@ -84,6 +84,7 @@ const gameBoard = (function () {
     const rows = 3;
     const board = [];
     let turn = 1;
+    const getTurn = () => turn;
     let currentTurnMark = "X";
     let gameOver = false;
     let tie = false;
@@ -197,6 +198,7 @@ const gameBoard = (function () {
     }
     
     return {
+        getTurn,
         isGameOver,
         isTie,
         start,
