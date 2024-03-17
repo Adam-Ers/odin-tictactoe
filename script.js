@@ -1,18 +1,11 @@
 function createTile() {
     let tile = "_";
-    
-    const checkTileEmpty = () => {
-        return tile === "_";
-    };
-
-    const setTile = value => {
-        tile = value;
-    };
-
     const getTile = () => tile;
+    const setTile = value => { tile = value; };
+    const isTileEmpty = () => { return tile === "_"; };
 
     return { 
-        setTile, getTile, checkTileEmpty,
+        setTile, getTile, isTileEmpty,
     };
 }
 
@@ -21,18 +14,17 @@ const domController = (function () {
     const buttons = document.querySelectorAll('.boardButton');
     const player1NameInput = document.querySelector('#player1Name');
     const player2NameInput = document.querySelector('#player2Name');
+    const restartButton = document.querySelector('.restartButton');
     let player1Name = "X";
     let player2Name = "O";
 
     const initialize = () => {
-        buttons.forEach(button => {
-            button.textContent = "";
-        });
-
+        resetButtons();
         assignButtonsToFunction(gameBoard.tryTile);
 
-        player1NameInput.addEventListener("blur", e => { changePlayerName(1, e.target.value); })
-        player2NameInput.addEventListener("blur", e => { changePlayerName(2, e.target.value); })
+        player1NameInput.addEventListener("blur", e => { changePlayerName(1, e.target.value); });
+        player2NameInput.addEventListener("blur", e => { changePlayerName(2, e.target.value); });
+        restartButton.addEventListener("click", gameBoard.restart);
     };
 
     const assignButtonsToFunction = func => {
@@ -48,9 +40,7 @@ const domController = (function () {
         changeHeaderPlayer(player);
     };
 
-    const changeHeaderText = text => {
-        header.textContent = text;
-    };
+    const changeHeaderText = text => { header.textContent = text; };
 
     const changeHeaderPlayer = player => {
         let playerText = player != 2 ? player1Name : player2Name;
@@ -58,8 +48,12 @@ const domController = (function () {
         if (gameBoard.isGameOver()) { changeHeaderText(`${playerText} wins!`); }
     };
 
-    const changeButtonText = (button, text) => {
-        button.textContent = text;
+    const changeButtonText = (button, text) => { button.textContent = text; };
+
+    const resetButtons = () => {
+        buttons.forEach(button => {
+            button.textContent = "";
+        });
     };
 
     return { 
@@ -67,6 +61,7 @@ const domController = (function () {
         changeButtonText,
         changeHeaderPlayer,
         assignButtonsToFunction,
+        resetButtons,
     };
 })();
 
@@ -80,14 +75,26 @@ const gameBoard = (function () {
     const isGameOver = () => gameOver;
 
     const start = () => {
+        createBoard();
+        domController.initialize();
+    };
+
+    const restart = () => { 
+        turn = 1;
+        currentTurnMark = "X";
+        gameOver = false;
+        start();
+        domController.changeHeaderPlayer(turn);
+     };
+
+    const createBoard = () => {
+        for (i = 0; i < board.length; i++) { board.pop(); }
         for (y = 0; y < rows; y++) {
             board[y] = [];
             for (x = 0; x < columns; x++) {
                 board[y].push(createTile());
             }
         }
-
-        domController.initialize();
     };
 
     const print = () => {
@@ -110,13 +117,12 @@ const gameBoard = (function () {
         const buttonColumn = buttonID - (buttonRow * 3);
 
         const tile = board[buttonRow][buttonColumn];
-        if (tile.checkTileEmpty())
+        if (tile.isTileEmpty())
         {
             tile.setTile(currentTurnMark);
             domController.changeButtonText(e.target, currentTurnMark);
             checkWin();
             changeTurn();
-            domController.changeHeaderPlayer(turn);
         }
     }
 
@@ -161,6 +167,8 @@ const gameBoard = (function () {
             }
 
             if (counter === rows) { gameOver = true; }
+
+            domController.changeHeaderPlayer(turn);
         }
     }
     
@@ -169,6 +177,7 @@ const gameBoard = (function () {
         start,
         print,
         tryTile,
+        restart,
     };
 })();
 
