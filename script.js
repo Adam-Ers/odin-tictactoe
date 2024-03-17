@@ -18,6 +18,9 @@ const domController = (function () {
     let player1Name = "X";
     let player2Name = "O";
 
+    const crossPath = "./cross.svg";
+    const circlePath = "./circle.svg";
+
     const initialize = () => {
         resetButtons();
         assignButtonsToFunction(gameBoard.tryTile);
@@ -50,15 +53,25 @@ const domController = (function () {
 
     const changeButtonText = (button, text) => { button.textContent = text; };
 
+    const changeButtonSymbol = (button, symbol) => {
+        button.innerHTML = "";
+        const path = symbol === "X" ? crossPath : circlePath;
+
+        const img = document.createElement('img');
+        img.setAttribute("src", path);
+        button.appendChild(img);
+    }
+
     const resetButtons = () => {
         buttons.forEach(button => {
-            button.textContent = "";
+            button.innerHTML = "";
         });
     };
 
     return { 
         initialize,
         changeButtonText,
+        changeButtonSymbol,
         changeHeaderPlayer,
         assignButtonsToFunction,
         resetButtons,
@@ -120,7 +133,7 @@ const gameBoard = (function () {
         if (tile.isTileEmpty())
         {
             tile.setTile(currentTurnMark);
-            domController.changeButtonText(e.target, currentTurnMark);
+            domController.changeButtonSymbol(e.target, currentTurnMark);
             checkWin();
             changeTurn();
         }
